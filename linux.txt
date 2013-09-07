@@ -1,0 +1,81 @@
+
+
+linux study  七天计划
+
+
+linux ：跟鸟哥学菜  基础篇
+ 
+ 
+第一部份：Linux的规划与安装 
+ 
+ 计算机概论 
+ Linux是什么 
+ Linux如何学习 
+ 主机规划与磁盘分区 
+ 安装CentOS 5.x
+ 与多重引导技巧
+ 首次登陆与在线求助 man page
+ 
+ 
+第二部份：Linux文件、目录与磁盘格式 
+
+ Linux文件权限与目录配置 
+ Linux文件与目录管理
+ Linux 磁盘与文件系统管理 
+ 文件的压缩与打包 
+
+                                                  
+
+第三部份：学习Shell与Shell Scripts  
+
+ vim程序编辑器 
+ 认识与学习 BASH 
+ 正规表示法与
+ 文件格式化处理 
+ 学习 shell scripts 
+                                                                                       
+                                                 （第一、第二、第三部分  两天时间）
+
+第四部份：Linux使用者管理
+
+ Linux 账号管理与ACL 权限控制 
+ 磁盘配额(Quota)与进阶文件系统管理 
+ 例行性工作排程 (crontab) 
+ 程序管理与SELinux 初探 
+
+
+第五部份：Linux系统管理员
+
+ 认识系统服务(daemon) 
+ 认识与分析登录档 
+ 启动流程、模块管理与 loader 
+ 系统配置工具(网络与打印机)与硬件侦测 
+ 软件安装：原始码与 Tarball 
+ 软件安装：RPM, SRPM 与 YUM 功能 
+ X Window 配置介绍 
+ Linux 备份策略 
+ 核心编译 
+
+
+                                                 （第四、第五部分 三天时间）
+
+第六部份：其他备份文章
+ 
+
+ 基础学习篇--快速索引
+ 附录 A： GNU 的 GPL 条文 version 2
+ 附录 B： EXT2 / EXT3 档案系统 
+ Linux 系统与命令练习题 
+ SPFDISK 的一个范例 
+ 较小安装 Red Hat 7.2 
+ Red Hat 6.x 旧文件 
+ 基础篇第一版 Mandrake 9为例
+ 基础篇第二版 Fedora Core 4为例 
+
+                                                  （一天时间）
+
+     用一天时间对基础篇系统复习
+
+
+这部份包括了早期的Red Hat 6.x以及 鸟哥写的一、二版的基础篇各章节文章汇整！ 
+
