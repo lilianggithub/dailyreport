@@ -1,0 +1,326 @@
+
+ Linux 的账号与群组
+1 登陆 Linux 主机的时候，输入的是我们的账号，由于计算机仅认识 0 与 1，所以主机对于数字比较有概念的；至于账号只是为了让人们容易记忆而已。但是其实 Linux 主机并不会直接认识你的『账号名称』的，他仅认识 ID 啊 (ID 就是一组号码啦)。  而你的 ID 与账号的对应就在 /etc/passwd 当中。
+2 使用者标识符： UID 与 GID    每个登陆的使用者至少都会取得两个 ID ，一个是使用者 ID (User ID ，简称 UID)、一个是群组 ID (Group ID ，简称 GID)。
+3 跟使用者账号有关的有两个非常重要的文件，一个是管理使用者 UID/GID 重要参数的 /etc/passwd ，一个则是专门管理口令相关数据的 /etc/shadow .
+  /etc/passwd 文件结构  （ 每一行都代表一个账号，有几行就代表有几个账号在你的系统中！ 不过需要特别留意的是，里头很多账号本来就是系统正常运行所必须要的，我们可以简称他为系统账号， 例如 bin, daemon, adm, nobody 等等，这些账号请不要随意的杀掉）
+  head -n 4 /etc/passwd    Linux 系统都会有的第一行，就是 root 这个系统管理员那一行， 每一行使用『:』分隔开，共有七个，分别是：帐号名称、口令、UID、GID、用户信息说明栏、家目录、shell。
+   *udin分类：
+    0  :系统管理员;
+    1~99：由 distributions 自行创建的系统账号；
+    100~499：若用户有系统账号需求时，可以使用的账号 UID。
+    500~65535(可登陆账号) 给一般使用者用的。
+
+  /etc/shadow 文件结构  
+  head -n 4 /etc/shadow    shadow 同样以『:』作为分隔符，共有九个字段：帐号名称、口令，经过编码的口令 (加密)、最近更改口令的日期、口令不可被更改的天数、口令需要重新变更的天数、口令需要重新变更前的警告天数、口令过期后的帐号宽限时间（口令失效日）、账号失效日期、保留。
+  /etc/group 文件结构  (记录 GID 与组名的对应) 每一行代表一个群组，也是以冒号『:』作为字段的分隔符，共分为四栏.有：组名、群组口令、GID、此群组支持的账号名称。
+  有效群组(effective group)与初始群组(initial group)
+初始群组(initial group)：当用户一登陆系统，立刻就拥有这个群组的相关权限的意思。
+  groups: 有效与支持群组的观察   groups命令显示所有支持的群组
+  newgrp: 有效群组的切换   
+  /etc/gshadow
+   head -n 4 /etc/gshadow  显示：组名、口令栏、群组管理员的账号 (相关信息在 gpasswd 中介绍)、该群组的所属账号 (与 /etc/group 内容相同！)。  gshadow 最大的功能就是创建群组管理员
+4 新增与移除使用者： useradd, 相关配置文件, passwd, usermod, userdel
+  useradd [-u UID] [-g 初始群组] [-G 次要群组] [-mM]\>  [-c 说明栏] [-d 家目录绝对路径] [-s shell] 使用者账号名选项与参数：
+     -u  ：后面接的是 UID ，是一组数字。直接指定一个特定的 UID 给这个账号；
+    -g  ：后面接的那个组名就是我们上面提到的 initial group 啦～
+      该群组的 GID 会被放置到 /etc/passwd 的第四个字段内。
+    -G  ：后面接的组名则是这个账号还可以加入的群组。
+      这个选项与参数会修改 /etc/group 内的相关数据喔！
+    -M  ：强制！不要创建用户家目录！(系统账号默认值)
+    -m  ：强制！要创建用户家目录！(一般账号默认值)
+    -c  ：这个就是 /etc/passwd 的第五栏的说明内容啦～可以随便我们配置的啦～
+    -d  ：指定某个目录成为家目录，而不要使用默认值。务必使用绝对路径！
+    -r  ：创建一个系统的账号，这个账号的 UID 会有限制 (参考 /etc/login.defs)
+    -s  ：后面接一个 shell ，若没有指定则默认是 /bin/bash 的啦～
+    -e  ：后面接一个日期，格式为『YYYY-MM-DD』此项目可写入 shadow 第八字段，
+      亦即账号失效日的配置项目啰；
+    -f  ：后面接 shadow 的第七字段项目，指定口令是否会失效。0为立刻失效，
+    -1 为永远不失效(口令只会过期而强制于登陆时重新配置而已。)
+ 
+  useradd [username]
+  ll -d /home/vbird1    默认会创建用户家目录，且权限为 700 ！这是重点！
+  grep vbird1 /etc/passwd /etc/shadow /etc/group
+
+  useradd [username]
+  ll -d /home/vbird1    默认会创建用户家目录，且权限为 700 ！这是重点！
+  grep vbird1 /etc/passwd /etc/shadow /etc/group
+
+  useradd -D 参考档
+
+  passwd
+
+  userdel  删除用户的相关数据，而用户的数据有：
+    用户账号/口令相关参数：/etc/passwd, /etc/shadow
+    使用者群组相关参数：/etc/group, /etc/gshadow
+    用户个人文件数据： /home/username, /var/spool/mail/username..
+   userdel [-r] username  选项与参数：-r  ：连同用户的家目录也一起删除
+
+  finger
+  finger [-s] username  选项与参数：
+  -s  ：仅列出用户的账号、全名、终端机代号与登陆时间等等；
+  -m  ：列出与后面接的账号相同者，而不是利用部分比对 (包括全名部分)
+
+  chfn
+  chfn [-foph] [账号名]  选项与参数：
+  -f  ：后面接完整的大名；
+  -o  ：您办公室的房间号码；
+  -p  ：办公室的电话号码；
+  -h  ：家里的电话号码！
+ chfn 与 chsh ，都是能够让一般用户修改 /etc/passwd 这个系统文件的
+  chsh
+  chsh [-ls] 选项与参数：
+  -l  ：列出目前系统上面可用的 shell ，其实就是 /etc/shells 的内容！
+  -s  ：配置修改自己的 Shell 啰
+
+  id
+  id 这个命令则可以查询某人或自己的相关 UID/GID 等等的信息，他的参数也不少，不过， 都不需要记～反正使用 id 就全部都列出
+
+ 基本上，群组的内容都与这两个文件有关：/etc/group, /etc/gshadow。
+  
+ groupadd
+ groupadd [-g gid] [-r] 组名     选项与参数：
+  -g  ：后面接某个特定的 GID ，用来直接给予某个 GID ～
+  -r  ：创建系统群组啦！与 /etc/login.defs 内的 GID_MIN 有关。
+
+  groupmod
+  跟 usermod 类似的，这个命令仅是在进行 group 相关参数的修改而已。
+  groupmod [-g gid] [-n group_name] 群组名  选项与参数：
+  -g  ：修改既有的 GID 数字；
+  -n  ：修改既有的组名
+
+  groupdel 自然就是在删除群组的
+  groupdel [groupname]   删除群组
+
+  gpasswd [-ad] user groupname   选项与参数：
+  -a  ：将某位使用者加入到 groupname 这个群组当中！
+  -d  ：将某位使用者移除出 groupname 这个群组当中。
+   gpasswd groupname
+   gpasswd [-A user1,...] [-M user3,...] groupname
+   gpasswd [-rR] groupname
+   选项与参数：
+        ：若没有任何参数时，表示给予 groupname 一个口令(/etc/gshadow)
+    -A  ：将 groupname 的主控权交由后面的使用者管理(该群组的管理员)
+    -M  ：将某些账号加入这个群组当中！
+    -r  ：将 groupname 的口令移除
+    -R  ：让 groupname 的口令栏失效
+
+5 ACL 是 Access Control List 的缩写，主要的目的是在提供传统的 owner,group,others 的 read,write,execute 权限之外的细部权限配置。ACL 可以针对单一使用者，单一文件或目录来进行 r,w,x 的权限规范，对于需要特殊权限的使用状况非常有帮助。
+   主要可以针对几个项目：
+    使用者 (user)：可以针对使用者来配置权限；
+    群组 (group)：针对群组为对象来配置其权限；
+    默认属性 (mask)：还可以针对在该目录下在创建新文件/目录时，规范新数据的默认权限；
+    mount  <==直接查阅挂载参数的功能
+
+ 让你的 filesystem 启动 ACL 支持后，利用这两个命令就可以了：
+    getfacl：取得某个文件/目录的 ACL 配置项目；
+    setfacl：配置某个目录/文件的 ACL 规范。
+
+  setfacl
+  setfacl [-bkRd] [{-m|-x} acl参数] 目标文件名
+  选项与参数：
+  -m ：配置后续的 acl 参数给文件使用，不可与 -x 合用；
+  -x ：删除后续的 acl 参数，不可与 -m 合用；
+  -b ：移除所有的 ACL 配置参数；
+  -k ：移除默认的 ACL 参数，关于所谓的『默认』参数于后续范例中介绍；
+  -R ：递归配置 acl ，亦即包括次目录都会被配置起来；
+  -d ：配置『默认 acl 参数』的意思！只对目录有效，在该目录新建的数据会引用此默认值
+
+  getfacl 
+  getfacl filename
+  选项与参数： getfacl 的选项几乎与 setfacl 相同！
+  getfacl acl_test1  列出刚刚我们配置的 acl_test1 的权限内容
+
+  su
+  sudo
+  sudo [-b] [-u 新使用者账号]
+  选项与参数：
+  -b  ：将后续的命令放到背景中让系统自行运行，而不与目前的 shell 产生影响
+  -u  ：后面可以接欲切换的使用者，若无此项则代表切换身份为 root 。
+
+  visudo    除了 root 之外的其他账号，若想要使用 sudo 运行属于 root 的权限命令，则 root 需要先使用 visudo 去修改 /etc/sudoers ，让该账号能够使用全部或部分的 root 命令功能。
+  
+6   PAM (Pluggable Authentication Modules, 嵌入式模块)
+  PAM 可以说是一套应用程序编程接口 (Application Programming Interface, API)，他提供了一连串的验证机制，只要使用者将验证阶段的需求告知 PAM 后， PAM 就能够回报使用者验证的结果 (成功或失败)。PAM 用来进行验证的数据称为模块 (Modules)，每个 PAM 模块的功能都不太相同.
+  运行 passwd 后，这支程序呼叫 PAM 的流程是：
+  用户开始运行 /usr/bin/passwd 这支程序，并输入口令；passwd 呼叫 PAM 模块进行验证； PAM 模块会到 /etc/pam.d/ 找寻与程序 (passwd) 同名的配置文件； 依据 /etc/pam.d/passwd 内的配置，引用相关的 PAM 模块逐步进行验证分析；将验证结果 (成功、失败以及其他信息) 回传给 passwd 这支程序；passwd 这支程序会根据 PAM 回传的结果决定下一个动作 (重新输入新口令或者通过验证！)
+    /etc/pam.d/*：每个程序个别的 PAM 配置文件；
+    /lib/security/*：PAM 模块文件的实际放置目录；
+    /etc/security/*：其他 PAM 环境的配置文件；
+    /usr/share/doc/pam-*/：详细的 PAM 说明文件。
+
+7  w/who 查询目前已经登录在系统上的用户
+   last/lastlog 查询系统帐号最近登录的时间
+8  pwck命令可以检查 /etc/passwd 这个账号配置文件内的信息，与实际的家目录是否存在等信息， 还可以比对 /etc/passwd /etc/shadow 的信息是否一致，另外，如果 /etc/passwd 内的数据字段错误时，会提示使用者修订。  
+   pwconv   将 /etc/passwd 内的账号与口令，移动到 /etc/shadow 当中！
+   pwunconv 将 /etc/shadow 内的口令栏数据写回 /etc/passwd 当中， 并且删除 /etc/shadow 文件。
+   chpasswd  入未加密前的口令，并且经过加密后， 将加密后的口令写入 /etc/shadow 当中。
+   
+    先创建所需要的群组 ( vi /etc/group )；
+    将 /etc/group 与 /etc/gshadow 同步化 ( grpconv )；
+    创建账号的各个属性 ( vi /etc/passwd )；
+    将 /etc/passwd 与 /etc/shadow 同步化 ( pwconv )；
+    创建该账号的口令 ( passwd accountname )；
+    创建用户家目录 ( cp -a /etc/skel /home/accountname )；
+    更改用户家目录的属性 ( chown -R accountname.group /home/accountname )。
+9  磁盘配额(Quota)与进阶文件系统管理 
+10 工作排程的种类： at 一种是例行性的，就是每隔一定的周期要来办的事项
+   先找寻 /etc/at.allow 这个文件，写在这个文件中的使用者才能使用 at ，没有在这个文件中的使用者则不能使用 at (即使没有写在 at.deny 当中)；
+   如果 /etc/at.allow 不存在，就寻找 /etc/at.deny 这个文件，若写在这个 at.deny 的使用者则不能使用 at ，而没有在这个 at.deny 文件中的使用者，就可以使用 at 咯；
+    如果两个文件都不存在，那么只有 root 可以使用 at 这个命令。
+    cron  一种是突发性的，就是这次做完以后就没有的那一种 (计算机大降价...)
+11 anacron 与 /etc/anacrontab
+
+12  process 触发任何一个事件时，系统都会将他定义成为一个程序，并且给予这个程序一个 ID ，称为 PID，同时依据启发这个程序的使用者与相关属性关系，给予这个 PID 一组有效的权限配置。  
+   程序与程序 (process & program)  
+    程序 (program)：通常为 binary program ，放置在储存媒体中 (如硬盘、光盘、软盘、磁带等)， 为实体文件的型态存在；
+    程序 (process)：程序被触发后，运行者的权限与属性、程序的程序码与所需数据等都会被加载内存中， 操作系统并给予这个内存内的单元一个识别码 (PID)，可以说，程序就是一个正在运行中的程序。
+13 程序与程序
+14 fork and exec：程序呼叫的流程
+   在 Linux 的程序呼叫通常称为 fork-and-exec 的流程！程序都会藉由父程序以复制 (fork) 的方式产生一个一模一样的子程序， 然后被复制出来的子程序再以 exec 的方式来运行实际要进行的程序，最终就成为一个子程序的存在。
+15 Linux 的多人多工环境
+16 工作管理 (job control) 是用在 bash 环境下的，也就是说：『当我们登陆系统取得 bash shell 之后，在单一终端机介面下同时进行多个工作的行为管理 』。
+   进行工作管理的行为中， 其实每个工作都是目前 bash 的子程序，亦即彼此之间是有相关性的。 我们无法以 job control 的方式由 tty1 的环境去管理 tty2 的 bash ！
+17  job control 的管理：&, [ctrl]-z, jobs, fg, bg, kill
+　  离线管理问题： nohup
+18  程序的观察： ps (ps -l, ps aux, zombie), top, pstree
+    ps aux  <==观察系统所有的程序数据
+    ps -lA  <==也是能够观察所有系统的数据
+    ps axjf <==连同部分程序树状态
+  选项与参数：
+    -A  ：所有的 process 均显示出来，与 -e 具有同样的效用；
+    -a  ：不与 terminal 有关的所有 process ；
+    -u  ：有效使用者 (effective user) 相关的 process ；
+    x   ：通常与 a 这个参数一起使用，可列出较完整资讯。
+    输出格式规划：
+     l   ：较长、较详细的将该 PID 的的资讯列出；
+     j   ：工作的格式 (jobs format)
+     -f  ：做一个更为完整的输出。
+   ps -l将目前属於您自己这次登陆的 PID 与相关资讯列示出来(只与自己的 bash 有关)
+   top：动态观察程序的变化
+    top [-d 数字] | top [-bnp]
+   选项与参数：
+    -d  ：后面可以接秒数，就是整个程序画面升级的秒数。默认是 5 秒；
+    -b  ：以批量的方式运行 top ，还有更多的参数可以使用喔！
+      通常会搭配数据流重导向来将批量的结果输出成为文件。
+    -n  ：与 -b 搭配，意义是，需要进行几次 top 的输出结果。
+    -p  ：指定某些个 PID 来进行观察监测而已。
+    在 top 运行过程当中可以使用的按键命令：
+	? ：显示在 top 当中可以输入的按键命令；
+	P ：以 CPU 的使用资源排序显示；
+	M ：以 Memory 的使用资源排序显示；
+	N ：以 PID 来排序喔！
+	T ：由该 Process 使用的 CPU 时间累积 (TIME+) 排序。
+	k ：给予某个 PID 一个讯号  (signal)
+	r ：给予某个 PID 重新制订一个 nice 值。
+	q ：离开 top 软件的按键。
+   pstree [-A|U] [-up]
+   选项与参数：
+   -A  ：各程序树之间的连接以 ASCII 字节来连接；
+   -U  ：各程序树之间的连接以万国码的字节来连接。在某些终端介面下可能会有错误；
+   -p  ：并同时列出每个 process 的 PID；
+   -u  ：并同时列出每个 process 的所属帐号名称。
+
+　　程序的管理： signal, kill, killall
+    kill 都会配合 ps, pstree 等命令
+   kill -signal PID
+   killall -signal 命令名称
+   killall [-iIe] [command name]
+  选项与参数：
+  -i  ：interactive 的意思，互动式的，若需要删除时，会出现提示字节给使用者；
+  -e  ：exact 的意思，表示『后面接的 command name 要一致』，但整个完整的命令
+      不能超过 15 个字节。
+  -I  ：命令名称(可能含参数)忽略大小写。
+   
+　　关於程序的运行顺序： priority, nice, renice
+    值越低代表越优先的意思。不过这个 PRI 值是由核心动态调整的， 使用者无法直接调整 PRI 值的。PRI(new) = PRI(old) + nice  （ps -l查看PRI值）
+    nice [-n 数字] command
+  选项与参数：
+   -n  ：后面接一个数值，数值的范围 -20 ~ 19。
+    renice [number] PID
+    选项与参数：
+    PID ：某个程序的 ID 啊！
+
+　　系统资源的观察： free, uname, uptime, netstat, dmesg, vmstat
+   free ：观察内存使用情况
+   free [-b|-k|-m|-g] [-t]
+   选项与参数：
+   -b  ：直接输入 free 时，显示的单位是 Kbytes，我们可以使用 b(bytes), m(Mbytes)
+      k(Kbytes), 及 g(Gbytes) 来显示单位喔！
+   -t  ：在输出的最终结果，显示实体内存与 swap 的总量。
+   uname：查阅系统与核心相关资讯  
+   uname [-asrmpi]
+   选项与参数：
+  -a  ：所有系统相关的资讯，包括底下的数据都会被列出来；
+  -s  ：系统核心名称
+  -r  ：核心的版本
+  -m  ：本系统的硬件名称，例如 i686 或 x86_64 等；
+  -p  ：CPU 的类型，与 -m 类似，只是显示的是 CPU 的类型！
+  -i  ：硬件的平台 (ix86)
+  uptime：观察系统启动时间与工作负载，可以显示出 top 画面的最上面一行！
+  netstat ：追踪网络或插槽档
+  netstat -[atunlp]
+  选项与参数：
+  -a  ：将目前系统上所有的连线、监听、Socket 数据都列出来
+  -t  ：列出 tcp 网络封包的数据
+  -u  ：列出 udp 网络封包的数据
+  -n  ：不以程序的服务名称，以埠号 (port number) 来显示；
+  -l  ：列出目前正在网络监听 (listen) 的服务；
+  -p  ：列出该网络服务的程序 PID 
+  dmesg ：分析核心产生的信息
+  vmstat ：侦测系统资源变化
+   vmstat [-a] [延迟 [总计侦测次数]] <==CPU/内存等资讯
+ vmstat [-fs]                      <==内存相关
+ vmstat [-S 单位]                  <==配置显示数据的单位
+ vmstat [-d]                       <==与磁碟有关
+ vmstat [-p 分割槽]                <==与磁碟有关
+ 选项与参数：
+ -a  ：使用 inactive/active(活跃与否) 取代 buffer/cache 的内存输出资讯；
+ -f  ：启动到目前为止，系统复制 (fork) 的程序数；
+ -s  ：将一些事件 (启动至目前为止) 导致的内存变化情况列表说明；
+ -S  ：后面可以接单位，让显示的数据有单位。例如 K/M 取代 bytes 的容量；
+ -d  ：列出磁碟的读写总量统计表
+ -p  ：后面列出分割槽，可显示该分割槽的读写总量统计表
+
+
+19  查询已开启文件或已运行程序开启之文件： 
+    fuser 藉由文件(或文件系统)找出正在使用该文件的程序,
+    fuser [-umv] [-k [i] [-signal]] file/dir
+  选项与参数：
+  -u  ：除了程序的 PID 之外，同时列出该程序的拥有者；
+   -m  ：后面接的那个档名会主动的上提到该文件系统的最顶层，对 umount 不成 功很有效！
+   -v  ：可以列出每个文件与程序还有命令的完整相关性！
+   -k  ：找出使用该文件/目录的 PID ，并试图以 SIGKILL 这个讯号给予该 PID；
+   -i  ：必须与 -k 配合，在删除 PID 之前会先询问使用者意愿！
+   -signal：例如 -1 -15 等等，若不加的话，默认是 SIGKILL (-9) 罗！ 
+    lsof  列出被程序所开启的文件档名 ,
+     lsof [-aUu] [+d]
+   选项与参数：
+   -a  ：多项数据需要『同时成立』才显示出结果时！
+   -U  ：仅列出 Unix like 系统的 socket 文件类型；
+   -u  ：后面接 username，列出该使用者相关程序所开启的文件；
+   +d  ：后面接目录，亦即找出某个目录底下已经被开启的文件！
+    pidof 找出某支正在运行的程序的 PID
+    pidof [-sx] program_name
+  选项与参数：
+  -s  ：仅列出一个 PID 而不列出所有的 PID
+  -x  ：同时列出该 program name 可能的 PPID 那个程序的 PID。  
+
+20 SELinux 『 Security Enhanced Linux 』的缩写，字面上的意义就是安全强化的 Linux 之意！
+  传统的文件权限与帐号关系：自主式存取控制, DAC
+  以政策守则订定特定程序读取特定文件：委任式存取控制, MAC
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
