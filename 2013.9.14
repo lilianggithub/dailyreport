@@ -1,0 +1,76 @@
+1 卸载软件
+  命令： sudo apt-get remove softname
+
+  卸载并清除配置
+  命令： sudo apt-get remove --purge softname1 
+
+2 安装Flashplayer
+  sudo apt-get install flashplugin-nonfree
+  sudo update-flashplugin
+
+3 cp –r 源文件(source) 目的文件(target)
+4 删除一个已存在的账号
+  userdel 用户名
+5 head filename 显示filename的前十行内容
+  head -n 20 filename  显示filename的前二十行内容
+  (tail 显示后十行内容,语法同上)
+
+6 Ubuntu系统的主要目录结构。
+
+/ 根目录
+│
+├boot/              启动文件。所有与系统启动有关的文件都保存在这里
+│    └grub/         Grub引导器相关的文件
+│
+├dev/               设备文件
+├proc/              内核与进程镜像
+│
+├mnt/               临时挂载
+├media/             挂载媒体设备
+│
+├root/              root用户的$HOME目录
+├home/
+│    ├user/         普通用户的$HOME目录
+│    └.../
+│
+├bin/               系统程序
+├sbin/              管理员系统程序
+├lib/               系统程序库文件
+├etc/               系统程序和大部分应用程序的全局配置文件
+│   ├init.d/        SystemV风格的启动脚本
+│   ├rcX.d/         启动脚本的链接，定义运行级别
+│   ├network/       网络配置文件
+│   ├X11/           图形界面配置文件
+│
+├usr/
+│   ├bin/           应用程序
+│   ├sbin/          管理员应用程序
+│   ├lib/           应用程序库文件
+│   ├share/         应用程序资源文件
+│   ├src/           应用程序源代码
+│   ├local/
+│   │     ├soft/    用户程序
+│   │     └.../     通常使用单独文件夹
+│   ├X11R6/         图形界面系统
+│
+├var/               动态数据
+│
+├temp/              临时文件
+├lost+found/        磁盘修复文件
+
+
+
+7 daemon与服务 (service)
+  daemon 分为可独立启动的 stand_alone;
+             透过一支 super daemon 来统一管理的服务 .
+
+8 super daemon 由于是经过一个统一的 xinetd 来管理，因此可以具有类似防火墙管理功能。
+9 要配置启动时启动某个服务，可以用 chkconfig, ntsysv 命令。
+10 系统有问题时可以查询登录文件，文件默认都集中放置到 /var/log/ 目录内，其中messages 记录的资讯最多；记录的主要服务与程序为： syslogd, klogd, log 
+11 init 的配置档： /etc/inittab ，这个文件内容可以配置默认 runlevel、系统初始化脚本、不同运行等级的服务启动等。 
+12 主机的网络配置要成功，必须要有的数据：IP 、Netmask 、gateway 、DNS 服务器 等项目。DNS 服务器 IP 的指定，要写入 /etc/resolv.conf 文件中
+13 备份考虑因素：关键文件、储存媒体、备份方式(完整/关键)、备份频率、使用的备份工具等。 
+   关键数据：/etc, /home, /var/spool/mail, /boot, /root 等。    备份工具有 dd, cpio, tar, dump 等
+
+
+
