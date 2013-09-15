@@ -1,0 +1,42 @@
+网络基础
+1  OSI 七层协定  物理、链结、网络（ip）、传输（TCP, UDP）、会话、表现、应用          （LAM、WAN）
+2  LAM布线、linux联网
+3  IP 地址的组成 \32 bits 的数值，也就是由 32 个 0 与 1 组成的一连串数字！与分级  \ 整个 IP 网段分为五种等级  据 IP 网域的大小，可将 IP 的等级分为 A, B, C 三种常见的等级   私有 IP 与私有路由不可以直接连接到 Internet 上
+4  ICMP :因特网讯息控制协议 
+5  TCP 的三向交握
+6  网络防火墙与 OSI 七层协定
+   OSI 七层协议来说，每一层可以抵挡的数据有：
+    第二层：可以针对来源与目标的 MAC 进行抵挡；
+    第三层：主要针对来源与目标的 IP ，以及 ICMP 的类别 (type) 进行抵挡；
+    第四层：针对 TCP/UDP 的埠口进行抵挡，也可以针对 TCP 的状态 (code) 来处理。
+7  Linux 里面，DNS 主机 IP 的设定就是在 /etc/resolv.conf 这个档案里
+   可以连上 Internet 的必要网络参数IP\Netmask\ Network\ Broadcast\ Gateway\ DNS  
+8  以太网络上最重要的传输数据为(CSMA/CD) 技术，传输过程中最重要的 MAC 讯框内以硬件地址 (hardware address) 数据最为重要
+9  DNS 主要的目的在于进行 Hostname 对应 IP 的功能
+10 网络参数设定使用的指令 ( 无线网络： iwlist, iwconfig )
+    ifconfig    ：查询、设定网络卡与 IP 网域等相关参数；
+    ifup, ifdown：这两个档案是 script，透过更简单的方式来启动网络接口；
+    route       ：查询、设定路由表 (route table)
+    ip          ：复合式的指令， 可以直接修改上述提到的功能；
+11 ping\ telnet\ ftp.lftp\ 文字浏览器： links\文字接口下载器： wget
+
+12 远程联机服务器在提供你由远程透过文字或图形接口的方式来登入系统， 让你在远程的工作机前面登入 Linux 主机以取得可操控主机之接口 (shell)，而登入后的操作感觉上就像坐在系统前面一样！
+13 以登入的联机界面来分类，基本上有文字接口与图形接口两种：文字接口密码： ssh 为主;  图形接口： Xdmcp, VNC, RDP 等      数据传送的明码与密码 
+14 文字接口联机服务器：SSH 服务器   （ssh 安全的壳程序协议）
+　　联机加密技术：产生新的公钥  　　启动 ssh 服务
+　　ssh 客户端联机程序 - Linux 用户： ssh, ~/.ssh/known_hosts, sftp, scp
+　　sshd 服务器细部设定
+　　制作不用密码可立即登入的 ssh 用户： ssh-keygen
+15 远程登录服务有 rsh, telnet, ssh, vnc, xdmcp 
+16 telnet 与 rsh 都是以明码传输数据，当数据在 Internet 上面传输时较不安全；ssh 由于使用密钥系统，因此数据在 Internet 上面传输时是加密过的，所以较为安全；但是不要对整个 Internet 开放 ssh 的可登入权限;ssh 的 client 端软件提供 ssh, scp, sftp 等程序
+17 dhcp服务器
+18 Network FileSystem (NFS文件服务器) 可让主机之间透过网络分享彼此的档案与目录 、NFS配置文件是 /etc/exports 
+   SAMBA 服务器 ;SAMBA 可以让 Linux 与 Windows 直接进行文件系统的使用；主配置文件之档名为 smb.conf
+19  NIS （账号控管服务器 ）主要是负责在网域当中帮忙 NIS Client 端查寻账号与密码以及其他相关网络参数的服务； yp 这个软件;
+20 NTP 时间服务器 ;Linux 系统本来就有两种时间，一种是 Linux 以 1970/01/01 开始计数的系统时间，一种则是 BIOS 记载的硬件时间；时区档案主要放置于 /usr/share/zoneinfo/ 目录下，而本地时区则参考 /etc/localtime；在 Linux 下想要手动处理时间时，需以 date 设定时间后，以 hwclock -w 来写入 BIOS 所记录的时间。
+21 Proxy 服务器 
+22 网络驱动器装置：iSCSI 服务器 
+23 DNS 主机名控制服务器  DNS 查询的指令主要有： host, nslookup, dig, whois
+24 WWW 服务器 （http协议）
+
+
