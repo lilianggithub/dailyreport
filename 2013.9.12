@@ -1,0 +1,38 @@
+
+常用命令
+
+1  su username   用于不同用户切换
+2  pwd  显示用户当前所在的目录
+3  cd  显示当前状态和更改当前状态  cd .. 进入上一层目录    cd -  进入上一个进入的目录  cd ～ 进入用户的home目录 
+4  ls 显示当前目录的内容  ls -1 显示目录内容的详细信息  
+5  find 用于查找文件  find / -name xxx -print 搜索系统上所有名称为xxx的文件  
+6  mkdir 用于建立目录
+7  cp 用于复制文件或目录  cp xxx /home 将当前目录中的xxx文件复制到home目录中  cp -R 复制整个目录及其所有子文件
+8  rm 用于删除文件或目录   rm -i 在删除是提示确认   rm -rf 强制删除目录
+9  mv 用于移动文件和更名文件   mv xxx /home 将当前目录下的xxx文件移动到/home目录下  mv xxx xxxx  将xxx文件改名为xxxx   （mv类似cp）
+10 reboot 重启   halt\poweroff 关机   
+
+
+11  who/w 显示在线登录用户
+12  cat 显示文本文件的内容
+13  tac 反转显示文件内容
+14  ls --color 彩色显示文件
+15  kill  结束进程
+16  cat  链接文件并输出内容
+17  install 复制文件并且设置属性 
+18  free 显示系统中已用和未用的内存空间总和
+19  find 在目录层次中查找文件
+
+  
+
+
+
+
+
+
+
+
+
+
+
+

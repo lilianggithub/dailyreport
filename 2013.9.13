@@ -1,0 +1,59 @@
+前半天出去了
+
+1 mysql在ubuntu上的简单使用
+  安装mysql：
+        sudo apt-get install mysql-server  （设置root密码）
+        sudo apt-get install mysql-client  
+        sudo apt-get install php5-mysql  （php与mysql连接）
+
+  安装phpMyadmin：     
+            sudo apt-get install phpmyadmin
+            sudo ln -s /usr/share/phpmyadmin
+
+    安装过程中配置phpMyadmin，服务器要选择apache2。并且需要输入数据库的登陆密码，并设置phpMyadmin的登陆密码          
+  （phpmyadmin使用与在win下一样。）
+
+  安装完成。
+  在linux shell下使用mysql：
+  重启mysql ：  sudo /etc/init.d/mysql start
+  root下进入mysql： mysql -uroot -p123456
+  mysql>show databases;        #查看系统中数据库；
+  mysql>create database liliang;   #创建数据库； 
+  mysql>use liliang;                #指定要操作的数据库名称；  
+  mysql>create tables tab1;     #在liliang数据库中创建表tab1；  
+  mysql>show tables;           #查看liliang数据库包含的数有数据表；  
+  mysql>drop database liliang;      #删除数据库liliang;  
+  mysql>drop table tab1;        #删除db1数据库中的表tab1;  
+  mysql>desc tab1;              #查看tab1表的结构；  
+  mysql>select * from tabl;      #查看表tab1的所有项;  
+
+   
+  退出mysql： exit
+
+
+2  mysql数据库停止命令：
+   sudo /etc/init.d/mysql stop
+   mysql服务器重新启动：
+   sudo /etc/init.d/mysql start
+   重新设置mysql密码：
+   sudo /use/bin/mysqladmin -u root password 123456
+   查看数据库版本：
+   mysql>status； 
+
+3 导入外部数据文本:
+  1.执行外部的sql脚本
+  当前数据库上执行:mysql < input.sql
+  指定数据库上执行:mysql [表名] < input.sql
+  2.数据传入命令 load data local infile "[文件名]" into table [表名];
+    
+  
+4 备份与恢复数据库：（没有测试成功）
+    mysqldump --opt school>school.bbb
+    mysqldump -u [user] -p [password] databasename > filename (备份)
+    mysql -u [user] -p [password] databasename < filename (恢复)
+
+
+
+
+
+
